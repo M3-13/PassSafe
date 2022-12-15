@@ -21,6 +21,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "bootstrap": "^5.2.3",
     "immer": "^9.0.16",
     "json-server": "^0.17.1",
     "lit-html": "^2.4.0",

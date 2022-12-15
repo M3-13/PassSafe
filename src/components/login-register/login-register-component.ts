@@ -1,6 +1,7 @@
 import { html, render } from "lit-html"
 import { User } from "../../model/user";
 import userService from "../../user-service";
+import { LOGGEDIN_EVENT } from "."
 
 const template = html`
 <div class='all'>
@@ -29,10 +30,10 @@ const template = html`
     </div>
     `
 
-class LoginRegisterComponent extends HTMLElement{
+class LoginRegisterComponent extends HTMLElement {
     constructor() {
         super()
-        const shadow = this.attachShadow({mode: "open"})
+        const shadow = this.attachShadow({ mode: "open" })
 
         let style = document.createElement("style");
 
@@ -141,7 +142,7 @@ class LoginRegisterComponent extends HTMLElement{
             const email = (<HTMLInputElement>this.shadowRoot.getElementById("signup-email")).value
             const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("signup-pwd")).value
 
-            var user: User = {name: username, email: email, password: pwd};
+            var user: User = { name: username, email: email, password: pwd };
 
             userService.addUser(user)
         });
@@ -150,17 +151,21 @@ class LoginRegisterComponent extends HTMLElement{
         signin_form.addEventListener('submit', (event) => this.checkUser(), false)
     }
 
-    async checkUser(){
+    async checkUser() {
         {
             const email = (<HTMLInputElement>this.shadowRoot.getElementById("signin-email")).value
             const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("signin-pwd")).value
 
-            var user: User = {email: email, password: pwd};
+            var user: User = { email: email, password: pwd };
 
-            if(await userService.authorizeUser(user)){
+            if (await userService.authorizeUser(user)) {
                 console.log("logged in")
-            }else{
+                const event = new CustomEvent(LOGGEDIN_EVENT, { detail: "true" })
+                this.dispatchEvent(event)
+            } else {
                 console.log("incorrect user data")
+                const event = new CustomEvent(LOGGEDIN_EVENT, { detail: "false" })
+                this.dispatchEvent(event)
             }
         }
     }
