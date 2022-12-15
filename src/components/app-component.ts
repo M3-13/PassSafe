@@ -9,7 +9,7 @@ const template = html`
 		<input type="checkbox" id="chk" aria-hidden="true">
 
 			<div class="signup">
-				<form id="signup-form" method='post' action='#'>
+				<form id="signup-form" method='post' onsubmit='return false'>
 					<label for="chk" aria-hidden="true">PassSafe | Sign up</label>
 					<input type="text" name="username" placeholder="Username" required="" id='signup-username'>
 					<input type="email" name="email" placeholder="Email" required="" id='signup-email'>
@@ -19,10 +19,10 @@ const template = html`
 			</div>
 
 			<div class="login">
-				<form method='post' action='#'>
+				<form id="signin-form" method='post' onsubmit='return false'>
 					<label for="chk" aria-hidden="true">PassSafe | Login</label>
-					<input type="email" name="email" placeholder="Email" required="">
-					<input type="password" name="pwd" placeholder="Password" required="">
+					<input type="email" name="email" placeholder="Email" required="" id='signin-email'>
+					<input type="password" name="pwd" placeholder="Password" required="" id='signin-pwd'>
 					<input class='submit-btn' type='submit' value='Login'></input>
 				</form>
 			</div>
@@ -137,23 +137,37 @@ class AppComponent extends HTMLElement {
         console.log("app-component connected")
         this.render()
 
-        const form = this.shadowRoot.getElementById('signup-form');
-        form.addEventListener('submit', (event) => {
-            const username = this.shadowRoot.getElementById("signup-username").textContent
-            const email = this.shadowRoot.getElementById("signup-email").textContent
-            const pwd = this.shadowRoot.getElementById("signup-pwd").textContent
+        const signup_form = this.shadowRoot.getElementById('signup-form');
+        signup_form.addEventListener('submit', (event) => {
+            const username = (<HTMLInputElement>this.shadowRoot.getElementById("signup-username")).value
+            const email = (<HTMLInputElement>this.shadowRoot.getElementById("signup-email")).value
+            const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("signup-pwd")).value
 
-            var user: User;
-            user.id = 0
-            user.name = username
-            user.email = email
-            user.password = pwd
+            var user: User = {name: username, email: email, password: pwd};
 
             userService.addUser(user)
         });
+
+        const signin_form = this.shadowRoot.getElementById('signin-form');
+        signin_form.addEventListener('submit', (event) => this.checkUser(), false)
     }
     private render() {
         render(template, this.shadowRoot)
+    }
+
+    async checkUser(){
+        {
+            const email = (<HTMLInputElement>this.shadowRoot.getElementById("signin-email")).value
+            const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("signin-pwd")).value
+
+            var user: User = {email: email, password: pwd};
+
+            if(await userService.authorizeUser(user)){
+                console.log("logged in")
+            }else{
+                console.log("incorrect user data")
+            }
+        }
     }
 }
 customElements.define("app-component", AppComponent)
