@@ -1,4 +1,7 @@
 import { html, render } from "lit-html"
+import { from } from "rxjs"
+import { User } from "../model/user"
+import userService from "../user-service"
 
 const template = html`
 <div class='all'>
@@ -6,20 +9,20 @@ const template = html`
 		<input type="checkbox" id="chk" aria-hidden="true">
 
 			<div class="signup">
-				<form>
+				<form id="signup-form" method='post' onsubmit='return false'>
 					<label for="chk" aria-hidden="true">PassSafe | Sign up</label>
-					<input type="text" name="username" placeholder="Username" required="">
-					<input type="email" name="email" placeholder="Email" required="">
-					<input type="password" name="pwd" placeholder="Password" required="">
+					<input type="text" name="username" placeholder="Username" required="" id='signup-username'>
+					<input type="email" name="email" placeholder="Email" required="" id='signup-email'>
+					<input type="password" name="pwd" placeholder="Password" required="" id='signup-pwd'>
 					<input class='submit-btn' type='submit' value='Sign up'></input>
 				</form>
 			</div>
 
 			<div class="login">
-				<form>
+				<form id="signin-form" method='post' onsubmit='return false'>
 					<label for="chk" aria-hidden="true">PassSafe | Login</label>
-					<input type="email" name="email" placeholder="Email" required="">
-					<input type="password" name="pwd" placeholder="Password" required="">
+					<input type="email" name="email" placeholder="Email" required="" id='signin-email'>
+					<input type="password" name="pwd" placeholder="Password" required="" id='signin-pwd'>
 					<input class='submit-btn' type='submit' value='Login'></input>
 				</form>
 			</div>
@@ -30,7 +33,7 @@ const template = html`
 class AppComponent extends HTMLElement {
     constructor() {
         super()
-        const shadow = this.attachShadow({mode: "open"})
+        const shadow = this.attachShadow({ mode: "open" })
 
         let style = document.createElement("style");
 
@@ -127,15 +130,44 @@ class AppComponent extends HTMLElement {
             transform: scale(.6);
         }
         `;
-        
+
         shadow.appendChild(style);
     }
     connectedCallback() {
         console.log("app-component connected")
         this.render()
+
+        const signup_form = this.shadowRoot.getElementById('signup-form');
+        signup_form.addEventListener('submit', (event) => {
+            const username = (<HTMLInputElement>this.shadowRoot.getElementById("signup-username")).value
+            const email = (<HTMLInputElement>this.shadowRoot.getElementById("signup-email")).value
+            const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("signup-pwd")).value
+
+            var user: User = {name: username, email: email, password: pwd};
+
+            userService.addUser(user)
+        });
+
+        const signin_form = this.shadowRoot.getElementById('signin-form');
+        signin_form.addEventListener('submit', (event) => this.checkUser(), false)
     }
     private render() {
         render(template, this.shadowRoot)
+    }
+
+    async checkUser(){
+        {
+            const email = (<HTMLInputElement>this.shadowRoot.getElementById("signin-email")).value
+            const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("signin-pwd")).value
+
+            var user: User = {email: email, password: pwd};
+
+            if(await userService.authorizeUser(user)){
+                console.log("logged in")
+            }else{
+                console.log("incorrect user data")
+            }
+        }
     }
 }
 customElements.define("app-component", AppComponent)
