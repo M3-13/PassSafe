@@ -1,7 +1,7 @@
 import { html, render } from "lit-html"
 import { from } from "rxjs"
 import { User } from "../model/user"
-import userService from "../user-service"
+import userService from "../services/user-service"
 
 const template = html`
 <div class='all'>
