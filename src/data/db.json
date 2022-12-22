@@ -1,0 +1,22 @@
+{
+  "user": [
+    {
+      "name": "Test-User",
+      "email": "testmail@gmx.net",
+      "password": "testpass",
+      "id": 1
+    }
+  ],
+  "password_data": [
+    {
+      "password": {
+        "user_name": "Test-User",
+        "url": "testurl",
+        "name": "testpass",
+        "password": "pass123"
+      },
+      "userId": 1,
+      "id": 1
+    }
+  ]
+}
