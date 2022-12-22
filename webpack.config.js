@@ -10,6 +10,10 @@ module.exports = {
         test: /\.ts?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
       }
     ]
   },
@@ -22,12 +26,12 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin()
-    ],
-    devServer: {
-        static: {
-          directory: path.join(__dirname, '/'),
-        },
-        compress: true,
-        port: 4200,
-    },    
+  ],
+  devServer: {
+    static: {
+      directory: path.join(__dirname, '/'),
+    },
+    compress: true,
+    port: 4200,
+  },
 }

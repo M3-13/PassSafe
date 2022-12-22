@@ -29,8 +29,8 @@ class UserService {
             .then(response => console.log(JSON.stringify(response)))        // -> ID from User
     }
 
-    async authorizeUser(user: User): Promise<boolean | void> {
-        return fetch (ConnectionString + 'user/?' + new URLSearchParams({
+    async authorizeUser(user: User): Promise<any> {
+        return fetch(ConnectionString + 'user/?' + new URLSearchParams({
             email: user.email,
             password: user.password
         }), {
@@ -39,8 +39,8 @@ class UserService {
                 "Content-Type": "application/json"
             }
         })
-            .then (response => response.json())
-            .then (response => response.length > 0 ? true : false)
+            .then(response => response.json())
+        //.then (response => response.length > 0 ? true : false)
     }
 
     async getUserById(userId: string) {

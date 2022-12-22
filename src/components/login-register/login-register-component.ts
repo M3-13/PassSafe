@@ -38,15 +38,17 @@ class LoginRegisterComponent extends HTMLElement {
         let style = document.createElement("style");
 
         style.textContent = `
+        /*@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap");/*/
+
         .all{
+            font-size: 11pt;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'Jost', sans-serif;
-            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            font-family: 'Quicksand', sans-serif;
         }
         .main{
             width: 350px;
@@ -158,8 +160,13 @@ class LoginRegisterComponent extends HTMLElement {
 
             var user: User = { email: email, password: pwd };
 
-            if (await userService.authorizeUser(user)) {
+            var dbUser = await userService.authorizeUser(user).then(response => response = response.length > 0 ? response[0] : null);
+            console.log(dbUser)
+
+            if (dbUser != null) {
                 console.log("logged in")
+                sessionStorage.setItem("username", dbUser.name)
+                console.log(sessionStorage.getItem("username"))
                 const event = new CustomEvent(LOGGEDIN_EVENT, { detail: "true" })
                 this.dispatchEvent(event)
             } else {
