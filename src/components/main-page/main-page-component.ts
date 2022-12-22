@@ -1,5 +1,7 @@
 import { html, render } from "lit-html"
 import { Account } from "../../model/account";
+import { Password } from "../../model/password";
+import passwordService from "../../services/password-service";
 
 const template = html`
     <div class='all'>
@@ -22,31 +24,7 @@ const template = html`
     </div>
     <div class="space"></div>
     <div class='accounts'>
-    <div class="list-group">
-    <a href="#" class="list-group-item list-group-item-action">
-    <div class="d-flex w-100 justify-content-between">
-      <h5 class="mb-1">List group item heading</h5>
-      <small class="text-muted">3 days ago</small>
-    </div>
-    <p class="mb-1">Some placeholder content in a paragraph.</p>
-    <small class="text-muted">And some muted small print.</small>
-  </a>
-  <a href="#" class="list-group-item list-group-item-action">
-    <div class="d-flex w-100 justify-content-between">
-      <h5 class="mb-1">List group item heading</h5>
-      <small class="text-muted">3 days ago</small>
-    </div>
-    <p class="mb-1">Some placeholder content in a paragraph.</p>
-    <small class="text-muted">And some muted small print.</small>
-  </a>
-  <a href="#" class="list-group-item list-group-item-action">
-    <div class="d-flex w-100 justify-content-between">
-      <h5 class="mb-1">List group item heading</h5>s
-      <small class="text-muted">3 days ago</small>
-    </div>
-    <p class="mb-1">Some placeholder content in a paragraph.</p>
-    <small class="text-muted">And some muted small print.</small>
-  </a>
+    <div class="list-group" id='all_passwords'>
 </div>
 
 <div id="id01" class="modal">
@@ -240,7 +218,46 @@ class MainPageComponent extends HTMLElement {
   connectedCallback() {
     this.render()
   }
-  private render() {
+
+  private createPasswordElement(password: Password): HTMLDivElement{
+    var password_div = document.createElement("div")
+
+    var link = document.createElement("a");
+    link.setAttribute("href", "#")
+    link.setAttribute("class", "list-group-item list-group-item-action")
+
+    var div = document.createElement("div")
+    div.setAttribute("class", "d-flex w-100 justify-content-between")
+
+    var h5 = document.createElement("h5")
+    h5.setAttribute("class", "mb-1")
+    h5.textContent = "Name: " + password.name
+    var small = document.createElement("small")
+    small.setAttribute("class", "text-muted")
+    small.textContent = "3 days ago"
+    div.appendChild(h5)
+    div.appendChild(small)
+    
+    link.appendChild(div)
+
+    var p = document.createElement("p")
+    p.setAttribute("class", "mb-1")
+    p.textContent = "URL: " + password.url
+
+    link.appendChild(p)
+
+    var small2 = document.createElement("small")
+    small2.setAttribute("class", "text-muted")
+    small2.textContent = "click me for more information"
+
+    link.appendChild(small2)
+
+    password_div.appendChild(link)
+
+    return password_div
+  }
+
+  private async render() {
     render(template, this.shadowRoot)
 
     this.shadowRoot.getElementById("welcome-message").textContent += " " + sessionStorage.getItem("username")
@@ -264,6 +281,15 @@ class MainPageComponent extends HTMLElement {
       var account: Account = { name: username, email: email, password: pwd };
       console.log(account)
     });
+
+   var all_passwords = this.shadowRoot.getElementById("all_passwords")
+
+   var passwords = await passwordService.getPasswordDataWithUserId(1)
+   
+   passwords.forEach((password:any) => {
+    var newPassword = this.createPasswordElement(password.password)
+    all_passwords.appendChild(newPassword)
+   });
   }
 }
 

@@ -21,7 +21,7 @@ class PasswordService {
         .then(response => console.log(JSON.stringify(response)))
     }
 
-    async getPasswordDataWithUserId(userId: number): Promise<[] | void> {
+    async getPasswordDataWithUserId(userId: number): Promise<[]> {
         return fetch(ConnectionString + '/?' + new URLSearchParams({
             userId: userId.toString()
         }), {
@@ -31,7 +31,6 @@ class PasswordService {
             }
         })
         .then(response => response.json())
-        .then(response => console.log(response.length === 0 ? [] : response))
     }
 
     async getPasswordWithId(passwordId: number): Promise<[] |void> {

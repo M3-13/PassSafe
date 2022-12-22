@@ -5,6 +5,12 @@
       "email": "testmail@gmx.net",
       "password": "testpass",
       "id": 1
+    },
+    {
+      "name": "test",
+      "email": "test@gmail.com",
+      "password": "test",
+      "id": 2
     }
   ],
   "password_data": [

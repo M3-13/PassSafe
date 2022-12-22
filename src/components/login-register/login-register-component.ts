@@ -164,13 +164,10 @@ class LoginRegisterComponent extends HTMLElement {
             console.log(dbUser)
 
             if (dbUser != null) {
-                console.log("logged in")
                 sessionStorage.setItem("username", dbUser.name)
-                console.log(sessionStorage.getItem("username"))
                 const event = new CustomEvent(LOGGEDIN_EVENT, { detail: "true" })
                 this.dispatchEvent(event)
             } else {
-                console.log("incorrect user data")
                 const event = new CustomEvent(LOGGEDIN_EVENT, { detail: "false" })
                 this.dispatchEvent(event)
             }
