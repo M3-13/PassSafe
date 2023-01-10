@@ -1,7 +1,6 @@
 import { html, render } from "lit-html"
 import { Account } from "../../model/account";
-import { Password } from "../../model/password";
-import passwordService from "../../services/password-service";
+import accountService from "../../services/acccount-service";
 
 const template = html`
     <div class='all'>
@@ -24,7 +23,7 @@ const template = html`
     </div>
     <div class="space"></div>
     <div class='accounts'>
-    <div class="list-group" id='all_passwords'>
+    <div class="list-group" id='all_accounts'>
 </div>
 
 <div id="id01" class="modal">
@@ -43,7 +42,7 @@ const template = html`
 
     <div class="container" style="background-color:#f1f1f1">
       <button type="button" id='cancelBtn' class="cancelbtn">Cancel</button>
-      <button class="savebtn" type="submit">Add</button>
+      <button class="savebtn" type="submit" id='addBtn'>Add</button>
     </div>
   </form>
 </div>
@@ -219,8 +218,8 @@ class MainPageComponent extends HTMLElement {
     this.render()
   }
 
-  private createPasswordElement(password: Password): HTMLDivElement{
-    var password_div = document.createElement("div")
+  private createAccountElement(account: Account): HTMLDivElement{
+    var account_div = document.createElement("div")
 
     var link = document.createElement("a");
     link.setAttribute("href", "#")
@@ -231,7 +230,7 @@ class MainPageComponent extends HTMLElement {
 
     var h5 = document.createElement("h5")
     h5.setAttribute("class", "mb-1")
-    h5.textContent = "Name: " + password.name
+    h5.textContent = "Name: " + account.name
     var small = document.createElement("small")
     small.setAttribute("class", "text-muted")
     small.textContent = "3 days ago"
@@ -242,7 +241,7 @@ class MainPageComponent extends HTMLElement {
 
     var p = document.createElement("p")
     p.setAttribute("class", "mb-1")
-    p.textContent = "URL: " + password.url
+    p.textContent = "Email: " + account.email
 
     link.appendChild(p)
 
@@ -252,9 +251,9 @@ class MainPageComponent extends HTMLElement {
 
     link.appendChild(small2)
 
-    password_div.appendChild(link)
+    account_div.appendChild(link)
 
-    return password_div
+    return account_div
   }
 
   private async render() {
@@ -272,6 +271,8 @@ class MainPageComponent extends HTMLElement {
       this.shadowRoot.getElementById('id01').style.display = 'none'
     });
 
+    var userId = Number(sessionStorage.getItem("user_id"));
+
     const addAccountForm = this.shadowRoot.getElementById('addAccountForm');
     addAccountForm.addEventListener('submit', (event) => {
       const username = (<HTMLInputElement>this.shadowRoot.getElementById("account-username")).value
@@ -279,16 +280,16 @@ class MainPageComponent extends HTMLElement {
       const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("account-pwd")).value
 
       var account: Account = { name: username, email: email, password: pwd };
-      console.log(account)
+      accountService.addAccountDataToUser(userId, account);
     });
 
-   var all_passwords = this.shadowRoot.getElementById("all_passwords")
+   var all_accounts = this.shadowRoot.getElementById("all_accounts")
 
-   var passwords = await passwordService.getPasswordDataWithUserId(1)
+   var accounts = await accountService.getAccountDataWithUserId(userId)
    
-   passwords.forEach((password:any) => {
-    var newPassword = this.createPasswordElement(password.password)
-    all_passwords.appendChild(newPassword)
+   accounts.forEach((account:any) => {
+    var newAccount = this.createAccountElement(account.account)
+    all_accounts.appendChild(newAccount)
    });
   }
 }

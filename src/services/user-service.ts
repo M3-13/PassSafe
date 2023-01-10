@@ -1,5 +1,4 @@
 import produce from "immer"
-import { Password } from "../model/password"
 import store from "../model/store"
 import { User } from "../model/user"
 

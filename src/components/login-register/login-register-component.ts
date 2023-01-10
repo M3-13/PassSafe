@@ -161,10 +161,10 @@ class LoginRegisterComponent extends HTMLElement {
             var user: User = { email: email, password: pwd };
 
             var dbUser = await userService.authorizeUser(user).then(response => response = response.length > 0 ? response[0] : null);
-            console.log(dbUser)
 
             if (dbUser != null) {
                 sessionStorage.setItem("username", dbUser.name)
+                sessionStorage.setItem("user_id", dbUser.id)
                 const event = new CustomEvent(LOGGEDIN_EVENT, { detail: "true" })
                 this.dispatchEvent(event)
             } else {

@@ -24,7 +24,6 @@ class AppComponent extends HTMLElement {
         const loginRegisterComponent = this.shadowRoot.querySelector<HTMLElement>("login-register")
         loginRegisterComponent.addEventListener(LOGGEDIN_EVENT, (e: CustomEvent) => {
             const loggedIn = e.detail
-            console.log(loggedIn)
             if (loggedIn == "true") {
                 loginRegisterComponent.remove()
                 const mainpage = document.createElement("main-page")
