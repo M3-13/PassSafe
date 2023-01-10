@@ -1,27 +1,27 @@
 import produce from "immer"
-import { Password } from "../model/password"
+import { Account } from "../model/account"
 import store from "../model/store"
 import { User } from "../model/user"
 
 const ConnectionString = "http://localhost:3000/password_data"
 
-class PasswordService {
+class AccountService {
 
-    async addPasswordDataToUser(userId: number, password: Password) {
+    async addAccountDataToUser(userId: number, account: Account) {
          return fetch(ConnectionString, {
              method: 'POST',
              headers: {
                  "Content-Type": "application/json"
              },
              body: JSON.stringify({
-                 password, userId
+                account, userId
              })
         })
         .then(response => response.json())
         .then(response => console.log(JSON.stringify(response)))
     }
 
-    async getPasswordDataWithUserId(userId: number): Promise<[] | void> {
+    async getAccountDataWithUserId(userId: number): Promise<[]> {
         return fetch(ConnectionString + '/?' + new URLSearchParams({
             userId: userId.toString()
         }), {
@@ -31,12 +31,11 @@ class PasswordService {
             }
         })
         .then(response => response.json())
-        .then(response => console.log(response.length === 0 ? [] : response))
     }
 
-    async getPasswordWithId(passwordId: number): Promise<[] |void> {
+    async getAccountWithId(accountId: number): Promise<[] |void> {
         return fetch(ConnectionString + '/?' + new URLSearchParams({
-            id: passwordId.toString()
+            id: accountId.toString()
         }), {
             method: 'GET',
             headers: {
@@ -49,6 +48,6 @@ class PasswordService {
 
 }
 
-const passwordService = new PasswordService()
-export default passwordService
+const accountService = new AccountService()
+export default accountService
 

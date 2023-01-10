@@ -1,20 +1,297 @@
 import { html, render } from "lit-html"
+import { Account } from "../../model/account";
+import accountService from "../../services/acccount-service";
 
 const template = html`
-    <div>User: Max Mustermann</div>
-` 
+    <div class='all'>
+    <div class='content'>
+    <div class="upper-right-corner">
+    <div class="waviy">
+      <span style="--i:1">P</span>
+      <span style="--i:2">a</span>
+      <span style="--i:3">s</span>
+      <span style="--i:4">s</span>
+      <span style="--i:5">S</span>
+      <span style="--i:6">a</span>
+      <span style="--i:7">f</span>
+      <span style="--i:8">e</span>
+    </div>
+    <p id='welcome-message'>Hey, </p>
+    </div>
+    <div class="upper-left-corner">
+    <button id='addAccountBtn' class='addAccountBtn'>Add Account</button>
+    </div>
+    <div class="space"></div>
+    <div class='accounts'>
+    <div class="list-group" id='all_accounts'>
+</div>
 
-class MainPageComponent extends HTMLElement{
-    constructor() {
-        super()
-        this.attachShadow({mode: "open"})
+<div id="id01" class="modal">
+  
+  <form class="modal-content animate" method='post' onsubmit='return false' id='addAccountForm'>
+    <div class="container">
+      <label for="uname"><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="uname" required id='account-username'>
+
+      <label for="email"><b>Email</b></label>
+      <input type="text" placeholder="Enter Username" name="email" required id='account-email'>
+
+      <label for="psw"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" required id='account-pwd'>
+    </div>
+
+    <div class="container" style="background-color:#f1f1f1">
+      <button type="button" id='cancelBtn' class="cancelbtn">Cancel</button>
+      <button class="savebtn" type="submit" id='addBtn'>Add</button>
+    </div>
+  </form>
+</div>
+    </div
+    </div>
+    </div>
+`
+
+class MainPageComponent extends HTMLElement {
+  constructor() {
+    super()
+    const shadow = this.attachShadow({ mode: "open" })
+
+    let style = document.createElement("style");
+    style.textContent = `
+    @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css");
+    @import url("https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap");
+            
+    .all{
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
     }
-    connectedCallback() {
-        this.render()
+
+    .upper-right-corner{
+      float: right;
     }
-    private render() {
-        render(template, this.shadowRoot)
+
+    .upper-left-corner{
+      float: left;
     }
+
+    #welcome-message{
+      text-align: right;
+      color: #fff;
+    }
+
+    .space{
+      padding: 60px;
+    }
+
+    .content{
+        padding: 10px;
+        overflow: hidden;
+    }
+
+    .addAccountBtn{
+      background-color: #302b63;
+      width:auto;
+    }
+
+    input[type=text], input[type=password] {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
+
+    .cancelbtn {
+      width: auto;
+      padding: 10px 18px;
+      background-color: #f44336;
+    }
+
+    .savebtn {
+      width: auto;
+      padding: 10px 18px;
+      background-color: #04AA6D;
+      float: right;
+    }
+
+    .container {
+      padding: 16px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0,0,0);
+      background-color: rgba(0,0,0,0.4);
+      padding-top: 60px;
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto 15% auto;
+      border: 1px solid #888;
+      width: 50%;
+    }
+
+    .close {
+      position: absolute;
+      right: 25px;
+      top: 0;
+      color: #000;
+      font-size: 35px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: red;
+      cursor: pointer;
+    }
+
+    .animate {
+      -webkit-animation: animatezoom 0.6s;
+      animation: animatezoom 0.6s
+    }
+
+    @-webkit-keyframes animatezoom {
+      from {-webkit-transform: scale(0)} 
+      to {-webkit-transform: scale(1)}
+    }
+      
+    @keyframes animatezoom {
+      from {transform: scale(0)} 
+      to {transform: scale(1)}
+    }
+
+    @media screen and (max-width: 300px) {
+      .cancelbtn {
+        width: 100%;
+      }
+      .savebtn {
+        width: 100%;
+      }
+    }
+
+    .waviy {
+      position: relative;
+      font-family: 'Rock Salt', cursive;
+    }
+    .waviy span {
+      position: relative;
+      display: inline-block;
+      font-size: 40px;
+      color: #fff;
+      text-transform: uppercase;
+      animation: flip 2s infinite;
+      animation-delay: calc(.2s * var(--i))
+    }
+    @keyframes flip {
+      0%,80% {
+        transform: rotateY(360deg) 
+      }
+    }
+        `
+    shadow.appendChild(style)
+  }
+  connectedCallback() {
+    this.render()
+  }
+
+  private createAccountElement(account: Account): HTMLDivElement{
+    var account_div = document.createElement("div")
+
+    var link = document.createElement("a");
+    link.setAttribute("href", "#")
+    link.setAttribute("class", "list-group-item list-group-item-action")
+
+    var div = document.createElement("div")
+    div.setAttribute("class", "d-flex w-100 justify-content-between")
+
+    var h5 = document.createElement("h5")
+    h5.setAttribute("class", "mb-1")
+    h5.textContent = "Name: " + account.name
+    var small = document.createElement("small")
+    small.setAttribute("class", "text-muted")
+    small.textContent = "3 days ago"
+    div.appendChild(h5)
+    div.appendChild(small)
+    
+    link.appendChild(div)
+
+    var p = document.createElement("p")
+    p.setAttribute("class", "mb-1")
+    p.textContent = "Email: " + account.email
+
+    link.appendChild(p)
+
+    var small2 = document.createElement("small")
+    small2.setAttribute("class", "text-muted")
+    small2.textContent = "click me for more information"
+
+    link.appendChild(small2)
+
+    account_div.appendChild(link)
+
+    return account_div
+  }
+
+  private async render() {
+    render(template, this.shadowRoot)
+
+    this.shadowRoot.getElementById("welcome-message").textContent += " " + sessionStorage.getItem("username")
+
+    var openWindowBtn = this.shadowRoot.getElementById("addAccountBtn")
+    openWindowBtn.addEventListener('click', (event) => {
+      this.shadowRoot.getElementById('id01').style.display = 'block'
+    });
+
+    var cancelBtn = this.shadowRoot.getElementById("cancelBtn")
+    cancelBtn.addEventListener('click', (event) => {
+      this.shadowRoot.getElementById('id01').style.display = 'none'
+    });
+
+    var userId = Number(sessionStorage.getItem("user_id"));
+
+    const addAccountForm = this.shadowRoot.getElementById('addAccountForm');
+    addAccountForm.addEventListener('submit', (event) => {
+      const username = (<HTMLInputElement>this.shadowRoot.getElementById("account-username")).value
+      const email = (<HTMLInputElement>this.shadowRoot.getElementById("account-email")).value
+      const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("account-pwd")).value
+
+      var account: Account = { name: username, email: email, password: pwd };
+      accountService.addAccountDataToUser(userId, account);
+    });
+
+   var all_accounts = this.shadowRoot.getElementById("all_accounts")
+
+   var accounts = await accountService.getAccountDataWithUserId(userId)
+   
+   accounts.forEach((account:any) => {
+    var newAccount = this.createAccountElement(account.account)
+    all_accounts.appendChild(newAccount)
+   });
+  }
 }
 
-customElements.define("main-page-component", MainPageComponent)
+customElements.define("main-page", MainPageComponent)

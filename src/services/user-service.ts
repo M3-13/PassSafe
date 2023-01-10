@@ -1,5 +1,4 @@
 import produce from "immer"
-import { Password } from "../model/password"
 import store from "../model/store"
 import { User } from "../model/user"
 
@@ -30,7 +29,7 @@ class UserService {
         .then(response => console.log(JSON.stringify(response)))        // -> ID from User
     }
 
-    async authorizeUser(user: User): Promise<boolean | void> {
+    async authorizeUser(user: User): Promise<any> {
         return fetch (ConnectionString + '/?' + new URLSearchParams({
             email: user.email,
             password: user.password
@@ -41,7 +40,6 @@ class UserService {
             }
         })
         .then (response => response.json())
-        .then (response => response.length > 0 ? true : false)
     }
 
     async getUserById(userId: number) {

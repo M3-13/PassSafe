@@ -1,5 +1,6 @@
 import { html, render } from "lit-html"
 import { User } from "../../model/user";
+import { LOGGEDIN_EVENT } from "."
 import userService from "../../services/user-service";
 
 const template = html`
@@ -29,23 +30,25 @@ const template = html`
     </div>
     `
 
-class LoginRegisterComponent extends HTMLElement{
+class LoginRegisterComponent extends HTMLElement {
     constructor() {
         super()
-        const shadow = this.attachShadow({mode: "open"})
+        const shadow = this.attachShadow({ mode: "open" })
 
         let style = document.createElement("style");
 
         style.textContent = `
+        /*@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap");/*/
+
         .all{
+            font-size: 11pt;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'Jost', sans-serif;
-            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            font-family: 'Quicksand', sans-serif;
         }
         .main{
             width: 350px;
@@ -141,7 +144,7 @@ class LoginRegisterComponent extends HTMLElement{
             const email = (<HTMLInputElement>this.shadowRoot.getElementById("signup-email")).value
             const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("signup-pwd")).value
 
-            var user: User = {name: username, email: email, password: pwd};
+            var user: User = { name: username, email: email, password: pwd };
 
             userService.addUser(user)
         });
@@ -150,17 +153,23 @@ class LoginRegisterComponent extends HTMLElement{
         signin_form.addEventListener('submit', (event) => this.checkUser(), false)
     }
 
-    async checkUser(){
+    async checkUser() {
         {
             const email = (<HTMLInputElement>this.shadowRoot.getElementById("signin-email")).value
             const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("signin-pwd")).value
 
-            var user: User = {email: email, password: pwd};
+            var user: User = { email: email, password: pwd };
 
-            if(await userService.authorizeUser(user)){
-                console.log("logged in")
-            }else{
-                console.log("incorrect user data")
+            var dbUser = await userService.authorizeUser(user).then(response => response = response.length > 0 ? response[0] : null);
+
+            if (dbUser != null) {
+                sessionStorage.setItem("username", dbUser.name)
+                sessionStorage.setItem("user_id", dbUser.id)
+                const event = new CustomEvent(LOGGEDIN_EVENT, { detail: "true" })
+                this.dispatchEvent(event)
+            } else {
+                const event = new CustomEvent(LOGGEDIN_EVENT, { detail: "false" })
+                this.dispatchEvent(event)
             }
         }
     }
