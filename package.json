@@ -30,6 +30,7 @@
     "json-server": "^0.17.1",
     "lit-html": "^2.4.0",
     "rxjs": "^7.5.7",
-    "sass-loader": "^13.2.0"
+    "sass-loader": "^13.2.0",
+    "simple-web-notification": "^2.0.1"
   }
 }

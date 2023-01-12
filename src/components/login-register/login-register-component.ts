@@ -2,6 +2,7 @@ import { html, render } from "lit-html"
 import { User } from "../../model/user";
 import { LOGGEDIN_EVENT } from "."
 import userService from "../../services/user-service";
+import notificationTools from "../../utils/notificationTools";
 
 const template = html`
 <div class='all'>
@@ -167,9 +168,12 @@ class LoginRegisterComponent extends HTMLElement {
                 sessionStorage.setItem("user_id", dbUser.id)
                 const event = new CustomEvent(LOGGEDIN_EVENT, { detail: "true" })
                 this.dispatchEvent(event)
+                notificationTools.addNotification("Login", "Successfully logged in!");
+                
             } else {
                 const event = new CustomEvent(LOGGEDIN_EVENT, { detail: "false" })
                 this.dispatchEvent(event)
+                notificationTools.addNotification("Login", "Incorrect user data!");
             }
         }
     }
