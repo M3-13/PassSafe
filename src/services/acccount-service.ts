@@ -31,6 +31,7 @@ class AccountService {
             }
         })
         .then(response => response.json())
+        
     }
 
     async getAccountWithId(accountId: number): Promise<[] |void> {

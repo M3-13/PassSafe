@@ -50,6 +50,30 @@ const template = html`
     </div>
   </form>
 </div>
+<div id="id02" class="modal">
+<form class="modal-content animate" method='post' onsubmit='return false' id='addAccountForm'>
+    <div class="container">
+      <label for="uname"><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="uname" required id='account-username'>
+
+      <label for="email"><b>Email</b></label>
+      <input type="text" placeholder="Enter Email" name="email" required id='account-email'>
+
+      <label for="email"><b>URL</b></label>
+      <input type="text" placeholder="Enter URL" name="url" required id='account-url'>
+
+      <label for="psw"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" required id='account-pwd'>
+      <button class="generatePasswordBtn" type="button" id='generatePasswordBtn'>Generate Password</button>
+    </div>
+
+    <div class="container" style="background-color:#f1f1f1">
+      <button type="button" id='cancelBtn' class="cancelbtn">Cancel</button>
+      <button class="savebtn" type="submit" id='addBtn'>Add</button>
+    </div>
+  </form>
+
+</div>
     </div
     </div>
     </div>
@@ -227,10 +251,12 @@ class MainPageComponent extends HTMLElement {
     this.render()
   }
 
-  private createAccountElement(account: Account): HTMLDivElement{
+  private createAccountElement(account: Account, id: string): HTMLDivElement{
     var account_div = document.createElement("div")
 
-    var link = document.createElement("a");
+    account_div.id = id
+    
+    var link = document.createElement("a")
     link.setAttribute("href", "#")
     link.setAttribute("class", "list-group-item list-group-item-action")
 
@@ -303,16 +329,16 @@ class MainPageComponent extends HTMLElement {
       const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("account-pwd")).value
       const creationDate = new Date()
 
-      var account: Account = { name: username, email: email, password: pwd, url: url, creationDate: creationDate };
-      accountService.addAccountDataToUser(userId, account);
-    });
+      var account: Account = { name: username, email: email, password: pwd, url: url, creationDate: creationDate }
+      accountService.addAccountDataToUser(userId, account)
+    })
 
    var all_accounts = this.shadowRoot.getElementById("all_accounts")
 
    var accounts = await accountService.getAccountDataWithUserId(userId)
    
    accounts.forEach((account:any) => {
-    var newAccount = this.createAccountElement(account.account)
+    var newAccount = this.createAccountElement(account.account, account.id)
     all_accounts.appendChild(newAccount)
    });
 
