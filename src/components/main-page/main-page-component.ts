@@ -34,10 +34,14 @@ const template = html`
       <input type="text" placeholder="Enter Username" name="uname" required id='account-username'>
 
       <label for="email"><b>Email</b></label>
-      <input type="text" placeholder="Enter Username" name="email" required id='account-email'>
+      <input type="text" placeholder="Enter Email" name="email" required id='account-email'>
+
+      <label for="email"><b>URL</b></label>
+      <input type="text" placeholder="Enter URL" name="url" required id='account-url'>
 
       <label for="psw"><b>Password</b></label>
       <input type="password" placeholder="Enter Password" name="psw" required id='account-pwd'>
+      <button class="generatePasswordBtn" type="button" id='generatePasswordBtn'>Generate Password</button>
     </div>
 
     <div class="container" style="background-color:#f1f1f1">
@@ -78,6 +82,11 @@ class MainPageComponent extends HTMLElement {
     #welcome-message{
       text-align: right;
       color: #fff;
+    }
+
+    .generatePasswordBtn {
+      background-color: black;
+
     }
 
     .space{
@@ -233,7 +242,8 @@ class MainPageComponent extends HTMLElement {
     h5.textContent = "Name: " + account.name
     var small = document.createElement("small")
     small.setAttribute("class", "text-muted")
-    small.textContent = "3 days ago"
+    small.textContent = "" + account.creationDate
+    
     div.appendChild(h5)
     div.appendChild(small)
     
@@ -241,7 +251,7 @@ class MainPageComponent extends HTMLElement {
 
     var p = document.createElement("p")
     p.setAttribute("class", "mb-1")
-    p.textContent = "Email: " + account.email
+    p.textContent = "URL: " + account.url
 
     link.appendChild(p)
 
@@ -254,6 +264,18 @@ class MainPageComponent extends HTMLElement {
     account_div.appendChild(link)
 
     return account_div
+  }
+
+  private genPassword() {
+    var chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var passwordLength = 12;
+    var password = "";
+    for (var i = 0; i <= passwordLength; i++) {
+      var randomNumber = Math.floor(Math.random() * chars.length);
+      password += chars.substring(randomNumber, randomNumber +1);
+    }
+    
+    return password
   }
 
   private async render() {
@@ -277,9 +299,11 @@ class MainPageComponent extends HTMLElement {
     addAccountForm.addEventListener('submit', (event) => {
       const username = (<HTMLInputElement>this.shadowRoot.getElementById("account-username")).value
       const email = (<HTMLInputElement>this.shadowRoot.getElementById("account-email")).value
+      const url = (<HTMLInputElement>this.shadowRoot.getElementById("account-url")).value
       const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("account-pwd")).value
+      const creationDate = new Date()
 
-      var account: Account = { name: username, email: email, password: pwd };
+      var account: Account = { name: username, email: email, password: pwd, url: url, creationDate: creationDate };
       accountService.addAccountDataToUser(userId, account);
     });
 
@@ -291,6 +315,12 @@ class MainPageComponent extends HTMLElement {
     var newAccount = this.createAccountElement(account.account)
     all_accounts.appendChild(newAccount)
    });
+
+  const generatePasswordBtn = this.shadowRoot.getElementById('generatePasswordBtn')
+  generatePasswordBtn.addEventListener('click', (event) => {
+    const password_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-pwd"))
+    password_field.value = this.genPassword()
+  })
   }
 }
 
