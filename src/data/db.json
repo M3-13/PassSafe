@@ -1,46 +1,23 @@
 {
   "user": [
     {
-      "name": "Test-User",
-      "email": "testmail@gmx.net",
-      "password": "testpass",
-      "id": 1
-    },
-    {
-      "name": "test",
-      "email": "test@gmail.com",
+      "name": "testUser",
+      "email": "test.test@gmx.net",
       "password": "test",
-      "id": 2
+      "id": 1
     }
   ],
   "password_data": [
     {
-      "password": {
-        "user_name": "Test-User",
-        "url": "testurl",
-        "name": "testpass",
-        "password": "pass123"
+      "account": {
+        "name": "testUser",
+        "email": "test",
+        "password": "oS0NU@uWA1TG*",
+        "url": "test",
+        "creationDate": "2023-01-12T09:20:44.680Z"
       },
       "userId": 1,
       "id": 1
-    },
-    {
-      "account": {
-        "name": "sdfgsfdg",
-        "email": "xcfvgbhnj@gmail.com",
-        "password": "tg"
-      },
-      "userId": 2,
-      "id": 2
-    },
-    {
-      "account": {
-        "name": "crvubinm",
-        "email": "test@gmail.com",
-        "password": "xrcztvubinkml,"
-      },
-      "userId": 2,
-      "id": 3
     }
   ]
 }
