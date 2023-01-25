@@ -347,7 +347,6 @@ class MainPageComponent extends HTMLElement {
     var newAccount = this.createAccountElement(account.account, account.id)
     newAccount.addEventListener('click', async (event) => {
       var accountDetails = await accountService.getAccountWithId(parseInt(newAccount.id))
-      console.log(accountDetails[0].account)
       const username_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-username-edit"))
       username_edit_field.value = accountDetails[0].account.name
       const email_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-email-edit"))
