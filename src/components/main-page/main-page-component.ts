@@ -69,7 +69,7 @@ const template = html`
     </div>
 
     <div class="container" style="background-color:#f1f1f1">
-      <button type="button" id='cancelBtn' class="cancelbtn">Cancel</button>
+      <button type="button" id='cancelBtn2' class="cancelbtn">Cancel</button>
       <button class="savebtn" type="submit" id='updateBtn'>Update</button>
     </div>
   </form>
@@ -85,7 +85,7 @@ class MainPageComponent extends HTMLElement {
     super()
     const shadow = this.attachShadow({ mode: "open" })
 
-    let style = document.createElement("style");
+    let style = document.createElement("style")
     style.textContent = `
     @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css");
     @import url("https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap");
@@ -318,8 +318,12 @@ class MainPageComponent extends HTMLElement {
     var cancelBtn = this.shadowRoot.getElementById("cancelBtn")
     cancelBtn.addEventListener('click', (event) => {
       this.shadowRoot.getElementById('id01').style.display = 'none'
+    })
+
+    var cancelBtn2 = this.shadowRoot.getElementById('cancelBtn2')
+    cancelBtn2.addEventListener('click', (event) => {
       this.shadowRoot.getElementById('id02').style.display = 'none'
-    });
+    })
 
     var userId = Number(sessionStorage.getItem("user_id"));
 
