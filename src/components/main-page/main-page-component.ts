@@ -313,7 +313,7 @@ class MainPageComponent extends HTMLElement {
     var openWindowBtn = this.shadowRoot.getElementById("addAccountBtn")
     openWindowBtn.addEventListener('click', (event) => {
       this.shadowRoot.getElementById('id01').style.display = 'block'
-    });
+    })
 
     var cancelBtn = this.shadowRoot.getElementById("cancelBtn")
     cancelBtn.addEventListener('click', (event) => {
