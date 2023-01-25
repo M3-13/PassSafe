@@ -34,7 +34,7 @@ class AccountService {
         
     }
 
-    async getAccountWithId(accountId: number): Promise<[] |void> {
+    async getAccountWithId(accountId: number) {
         return fetch(ConnectionString + '/?' + new URLSearchParams({
             id: accountId.toString()
         }), {
@@ -44,7 +44,6 @@ class AccountService {
             }
         })
         .then(response => response.json())
-        .then(response => console.log(response.length === 0 ? [] : response[0].password))
     }
 
 }

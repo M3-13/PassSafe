@@ -50,26 +50,27 @@ const template = html`
     </div>
   </form>
 </div>
+
 <div id="id02" class="modal">
-<form class="modal-content animate" method='post' onsubmit='return false' id='addAccountForm'>
+<form class="modal-content animate" method='post' onsubmit='return false' id='accountDetailsForm'>
     <div class="container">
       <label for="uname"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required id='account-username'>
+      <input type="text" placeholder="Username" name="uname" required id='account-username-edit'>
 
       <label for="email"><b>Email</b></label>
-      <input type="text" placeholder="Enter Email" name="email" required id='account-email'>
+      <input type="text" placeholder="Enter Email" name="email" required id='account-email-edit'>
 
       <label for="email"><b>URL</b></label>
-      <input type="text" placeholder="Enter URL" name="url" required id='account-url'>
+      <input type="text" placeholder="Enter URL" name="url" required id='account-url-edit'>
 
       <label for="psw"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" required id='account-pwd'>
+      <input type="password" placeholder="Enter Password" name="psw" required id='account-pwd-edit'>
       <button class="generatePasswordBtn" type="button" id='generatePasswordBtn'>Generate Password</button>
     </div>
 
     <div class="container" style="background-color:#f1f1f1">
       <button type="button" id='cancelBtn' class="cancelbtn">Cancel</button>
-      <button class="savebtn" type="submit" id='addBtn'>Add</button>
+      <button class="savebtn" type="submit" id='updateBtn'>Update</button>
     </div>
   </form>
 
@@ -317,6 +318,7 @@ class MainPageComponent extends HTMLElement {
     var cancelBtn = this.shadowRoot.getElementById("cancelBtn")
     cancelBtn.addEventListener('click', (event) => {
       this.shadowRoot.getElementById('id01').style.display = 'none'
+      this.shadowRoot.getElementById('id02').style.display = 'none'
     });
 
     var userId = Number(sessionStorage.getItem("user_id"));
@@ -339,6 +341,20 @@ class MainPageComponent extends HTMLElement {
    
    accounts.forEach((account:any) => {
     var newAccount = this.createAccountElement(account.account, account.id)
+    newAccount.addEventListener('click', async (event) => {
+      var accountDetails = await accountService.getAccountWithId(parseInt(newAccount.id))
+      console.log(accountDetails[0].account)
+      const username_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-username-edit"))
+      username_edit_field.value = accountDetails[0].account.name
+      const email_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-email-edit"))
+      email_edit_field.value = accountDetails[0].account.email
+      const url_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-url-edit"))
+      url_edit_field.value = accountDetails[0].account.url
+      const password_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-pwd-edit"))
+      password_edit_field.value = accountDetails[0].account.password
+      
+      this.shadowRoot.getElementById('id02').style.display = 'block'
+    })
     all_accounts.appendChild(newAccount)
    });
 
