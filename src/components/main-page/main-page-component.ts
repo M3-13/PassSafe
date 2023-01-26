@@ -1,6 +1,7 @@
 import { html, render } from "lit-html"
 import { Account } from "../../model/account";
 import accountService from "../../services/acccount-service";
+import hashTools from "../../utils/hash-tools";
 
 const template = html`
     <div class='all'>
@@ -335,7 +336,9 @@ class MainPageComponent extends HTMLElement {
       const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("account-pwd")).value
       const creationDate = new Date()
 
-      var account: Account = { name: username, email: email, password: pwd, url: url, creationDate: creationDate }
+      var hashedPwd = hashTools.encrypt(pwd)
+
+      var account: Account = { name: username, email: email, password: hashedPwd, url: url, creationDate: creationDate }
       accountService.addAccountDataToUser(userId, account)
     })
 
@@ -354,7 +357,7 @@ class MainPageComponent extends HTMLElement {
       const url_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-url-edit"))
       url_edit_field.value = accountDetails[0].account.url
       const password_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-pwd-edit"))
-      password_edit_field.value = accountDetails[0].account.password
+      password_edit_field.value = hashTools.decrypt(accountDetails[0].account.password)
       
       this.shadowRoot.getElementById('id02').style.display = 'block'
     })
