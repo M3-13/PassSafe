@@ -50,6 +50,31 @@ const template = html`
     </div>
   </form>
 </div>
+
+<div id="id02" class="modal">
+<form class="modal-content animate" method='post' onsubmit='return false' id='accountDetailsForm'>
+    <div class="container">
+      <label for="uname"><b>Username</b></label>
+      <input type="text" placeholder="Username" name="uname" required id='account-username-edit'>
+
+      <label for="email"><b>Email</b></label>
+      <input type="text" placeholder="Enter Email" name="email" required id='account-email-edit'>
+
+      <label for="email"><b>URL</b></label>
+      <input type="text" placeholder="Enter URL" name="url" required id='account-url-edit'>
+
+      <label for="psw"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" required id='account-pwd-edit'>
+      <button class="generatePasswordBtn" type="button" id='generatePasswordBtn'>Generate Password</button>
+    </div>
+
+    <div class="container" style="background-color:#f1f1f1">
+      <button type="button" id='cancelBtn2' class="cancelbtn">Cancel</button>
+      <button class="savebtn" type="submit" id='updateBtn'>Update</button>
+    </div>
+  </form>
+
+</div>
     </div
     </div>
     </div>
@@ -60,7 +85,7 @@ class MainPageComponent extends HTMLElement {
     super()
     const shadow = this.attachShadow({ mode: "open" })
 
-    let style = document.createElement("style");
+    let style = document.createElement("style")
     style.textContent = `
     @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css");
     @import url("https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap");
@@ -227,10 +252,12 @@ class MainPageComponent extends HTMLElement {
     this.render()
   }
 
-  private createAccountElement(account: Account): HTMLDivElement{
+  private createAccountElement(account: Account, id: string): HTMLDivElement{
     var account_div = document.createElement("div")
 
-    var link = document.createElement("a");
+    account_div.id = id
+    
+    var link = document.createElement("a")
     link.setAttribute("href", "#")
     link.setAttribute("class", "list-group-item list-group-item-action")
 
@@ -286,12 +313,17 @@ class MainPageComponent extends HTMLElement {
     var openWindowBtn = this.shadowRoot.getElementById("addAccountBtn")
     openWindowBtn.addEventListener('click', (event) => {
       this.shadowRoot.getElementById('id01').style.display = 'block'
-    });
+    })
 
     var cancelBtn = this.shadowRoot.getElementById("cancelBtn")
     cancelBtn.addEventListener('click', (event) => {
       this.shadowRoot.getElementById('id01').style.display = 'none'
-    });
+    })
+
+    var cancelBtn2 = this.shadowRoot.getElementById('cancelBtn2')
+    cancelBtn2.addEventListener('click', (event) => {
+      this.shadowRoot.getElementById('id02').style.display = 'none'
+    })
 
     var userId = Number(sessionStorage.getItem("user_id"));
 
@@ -303,16 +335,29 @@ class MainPageComponent extends HTMLElement {
       const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("account-pwd")).value
       const creationDate = new Date()
 
-      var account: Account = { name: username, email: email, password: pwd, url: url, creationDate: creationDate };
-      accountService.addAccountDataToUser(userId, account);
-    });
+      var account: Account = { name: username, email: email, password: pwd, url: url, creationDate: creationDate }
+      accountService.addAccountDataToUser(userId, account)
+    })
 
    var all_accounts = this.shadowRoot.getElementById("all_accounts")
 
    var accounts = await accountService.getAccountDataWithUserId(userId)
    
    accounts.forEach((account:any) => {
-    var newAccount = this.createAccountElement(account.account)
+    var newAccount = this.createAccountElement(account.account, account.id)
+    newAccount.addEventListener('click', async (event) => {
+      var accountDetails = await accountService.getAccountWithId(parseInt(newAccount.id))
+      const username_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-username-edit"))
+      username_edit_field.value = accountDetails[0].account.name
+      const email_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-email-edit"))
+      email_edit_field.value = accountDetails[0].account.email
+      const url_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-url-edit"))
+      url_edit_field.value = accountDetails[0].account.url
+      const password_edit_field = (<HTMLInputElement>this.shadowRoot.getElementById("account-pwd-edit"))
+      password_edit_field.value = accountDetails[0].account.password
+      
+      this.shadowRoot.getElementById('id02').style.display = 'block'
+    })
     all_accounts.appendChild(newAccount)
    });
 
