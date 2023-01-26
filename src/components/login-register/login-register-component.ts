@@ -2,7 +2,8 @@ import { html, render } from "lit-html"
 import { User } from "../../model/user";
 import { LOGGEDIN_EVENT } from "."
 import userService from "../../services/user-service";
-import notificationTools from "../../utils/notificationTools";
+import notificationTools from "../../utils/notification-tools";
+import hashTools from "../../utils/hash-tools";
 
 const template = html`
 <div class='all'>
@@ -145,7 +146,9 @@ class LoginRegisterComponent extends HTMLElement {
             const email = (<HTMLInputElement>this.shadowRoot.getElementById("signup-email")).value
             const pwd = (<HTMLInputElement>this.shadowRoot.getElementById("signup-pwd")).value
 
-            var user: User = { name: username, email: email, password: pwd };
+            var hashedPwd = hashTools.encrypt(pwd)
+
+            var user: User = { name: username, email: email, password: hashedPwd };
 
             userService.addUser(user)
         });
@@ -161,7 +164,15 @@ class LoginRegisterComponent extends HTMLElement {
 
             var user: User = { email: email, password: pwd };
 
-            var dbUser = await userService.authorizeUser(user).then(response => response = response.length > 0 ? response[0] : null);
+            var allUsers = await userService.getAllUser();
+            var dbUser;
+            for(let userInList of allUsers){
+                var decryptedPwd = hashTools.decrypt(userInList.password)
+
+                if(pwd == decryptedPwd){
+                    dbUser = userInList;
+                }
+            }
 
             if (dbUser != null) {
                 sessionStorage.setItem("username", dbUser.name)
