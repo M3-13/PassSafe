@@ -52,7 +52,7 @@ const template = html`
 </div>
 
 <div id="id02" class="modal">
-<form class="modal-content animate" method='post' onsubmit='return false' id='accountDetailsForm'>
+<form class="modal-content animate" id='accountDetailsForm'>
     <div class="container">
       <label for="uname"><b>Username</b></label>
       <input type="text" placeholder="Username" name="uname" required id='account-username-edit'>
@@ -329,6 +329,7 @@ class MainPageComponent extends HTMLElement {
 
     const addAccountForm = this.shadowRoot.getElementById('addAccountForm');
     addAccountForm.addEventListener('submit', (event) => {
+      event.preventDefault()
       const username = (<HTMLInputElement>this.shadowRoot.getElementById("account-username")).value
       const email = (<HTMLInputElement>this.shadowRoot.getElementById("account-email")).value
       const url = (<HTMLInputElement>this.shadowRoot.getElementById("account-url")).value
